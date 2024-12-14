@@ -1,0 +1,132 @@
+{% extends 'admin/manager.html' %}
+
+{% block app_content %}
+<div class="container mb-4"></div>
+<h1 class="display-6" align="center">学生管理</h1>
+<div class="container mb-4"></div>
+
+<!-- 查询表单 -->
+<form id="searchForm" class="form-inline mb-4">
+    <input type="text" id="searchTerm" class="form-control mr-2" placeholder="输入学生姓名">
+    <button type="button" class="btn btn-primary" onclick="searchStudent()">查询</button>
+</form>
+
+<form action="/add_student" method="POST">
+    <div class="form-row">
+      <div class="col">
+        <select type="text" name="MajorName" class="form-control custom-select" required>
+            {% if info %}
+            {% for major in info.majors %}
+            <option>{{ major }}</option>
+            {% endfor %}
+            {% else %}
+            <option>无专业信息，请录入</option>
+            {% endif %}
+        </select>
+      </div>
+      <div class="col">
+        <input type="number" name="StudentNum" class="form-control" placeholder="学号" required>
+      </div>
+      <div class="col">
+        <input type="text" name="StudentName" class="form-control" placeholder="姓名" required>
+      </div>
+      <div class="col">
+        <select type="text" name="StudentSex" class="form-control custom-select" placeholder="性别" required>
+            <option>男</option>
+            <option>女</option>
+        </select>
+    </div>
+      <div class="col">
+        <input type="datetime" name="StudentInyear" class="form-control" placeholder="入学年份">
+      </div>
+      <div class="col">
+      <button type="submit" class="btn btn-block btn-success mb-2">录入</button>
+      </div>
+    </div>
+  </form>
+  <hr>
+  <div class="container mb-4"></div>
+    <table class="table table-striped table-hover" id="studentTable">
+            <thead class="thead-dark">
+        <tr>
+            <th class="lead">学号</th>
+            <th class="lead">姓名</th>
+            <th class="lead">性别</th>
+            <th class="lead">专业</th>
+            <th class="lead">操作</th>
+            <th class="lead">学生管理</th>
+        </tr>
+            </thead>
+            <tbody>
+        {% if students %}
+        {% for student in students %}
+        <tr>
+           <td class="lead">{{ student.StudentNum }}</td>
+           <td><input type="text" value="{{ student.StudentName }}" class="form-control" id="name-{{ student.StudentNum }}"></td>
+           <td>
+               <select class="form-control" id="sex-{{ student.StudentNum }}">
+                   <option value="男" {% if student.StudentSex == '男' %}selected{% endif %}>男</option>
+                   <option value="女" {% if student.StudentSex == '女' %}selected{% endif %}>女</option>
+               </select>
+           </td>
+           <td><input type="text" value="{{ student.major.MajorName }}" class="form-control" id="major-{{ student.StudentNum }}" readonly></td>
+           <td><button class="btn btn-success" onclick="updateStudent('{{ student.StudentNum }}')">保存</button></td>
+           <td class="lead">
+               <a href="{{ url_for('delete_student', StudentNum=student.StudentNum) }}" class="btn btn-outline-danger btn-sm" role="button">删除</a>
+           </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+    </table>
+
+<script>
+function searchStudent() {
+    const searchTerm = document.getElementById('searchTerm').value;
+    fetch('/search_student', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ search_term: searchTerm })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const tableBody = document.querySelector('#studentTable tbody');
+        tableBody.innerHTML = '';
+        data.forEach(student => {
+            const row = `<tr>
+                <td class="lead">${student.StudentNum}</td>
+                <td class="lead">${student.StudentName}</td>
+                <td class="lead">${student.StudentSex}</td>
+                <td class="lead">${student.MajorName}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function updateStudent(studentNum) {
+    const name = document.getElementById(`name-${studentNum}`).value;
+    const sex = document.getElementById(`sex-${studentNum}`).value;
+
+    fetch(`/update_student/${studentNum}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, sex })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('更新成功');
+        } else {
+            alert('更新失败');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+{% endblock %}

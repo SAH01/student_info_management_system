@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}登录后台管理系统{% endblock %}
+
+{% block styles %}
+  {{super()}}
+  <link href="https://v4.bootcss.com/docs/4.3/examples/floating-labels/floating-labels.css" rel="stylesheet">
+  <style>
+    .form-signin {
+      max-width: 330px; /* 调整输入框的最大宽度 */
+      padding: 15px;
+      margin: auto; /* 使表单居中 */
+    }
+    .form-signin .form-label-group {
+      margin-bottom: 15px;
+    }
+  </style>
+{% endblock%}
+
+{% block navbar %}{% endblock %}
+
+{% block content %}
+  <form action="/admin" method="POST" class="form-signin">
+    <div class="text-center mb-4">
+      <h2><strong>登录后台管理系统</strong></h2>
+    </div>
+    <br>      
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-warning" role="alert">
+          <strong>{{ message }}</strong>
+        </div>
+      {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="form-label-group">
+        <label for="inputText">账号</label>
+      <input type="number" name="username" id="inputText" class="form-control" placeholder="请输入账户" required autofocus>
+    </div>
+
+    <div class="form-label-group">
+        <label for="inputPassword">密码</label>
+      <input type="password" name="password" id="inputPassword" class="form-control" placeholder="请输入密码" required>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+{#    <p class="mt-5 mb-3 text-muted text-center">&copy; </p>#}
+  </form>
+{% endblock %}
+

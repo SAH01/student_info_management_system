@@ -1,0 +1,58 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}学生绩效管理系统{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+{#  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.2/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">#}
+  <link href="https://v4.bootcss.com/docs/4.3/examples/floating-labels/floating-labels.css" rel="stylesheet">
+{% endblock%}
+
+  {% block content %}
+  <div class="container">
+  <br>
+      <div class="row clearfix">
+          <div class="col-md-10 column">
+          </div>
+        <div class="col-md-2 column">
+        <a class="btn btn-primary" href="{{ url_for('admin') }}">管理员登录</a>
+        </div>
+      </div>
+      <div class="row clearfix">
+    <form action="/login" method="POST" class="form-signin">
+      <div class="text-center mb-4">
+        <h1><strong>学生绩效管理系统</strong></h1>
+      </div>
+      <br>      
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-warning" role="alert">
+            <strong>{{ message }}</strong>
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% endwith %}
+      <div class="form-label-group">
+          <label for="inputText">学生学号(8位数字)/教师工号(4位数字)</label>
+        <input type="number" name="username" id="inputText" class="form-control" placeholder="Username" required autofocus>
+
+      </div>
+
+      <div class="form-label-group">
+          <label for="inputPassword">密码</label>
+        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+
+      </div>
+      <div class="checkbox mb-3">
+{#        <label>#}
+{#          <input type="checkbox" name="remember"> Remember me#}
+{#        </label>#}
+      </div>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+{#      <p class="mt-5 mb-3 text-muted text-center">&copy; GGBond </p>#}
+    </form>
+  </div>
+  </div>
+  {% endblock %}
+
